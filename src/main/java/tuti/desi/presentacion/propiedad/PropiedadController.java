@@ -1,5 +1,7 @@
 package tuti.desi.presentacion.propiedad;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -92,10 +94,51 @@ public class PropiedadController {
     }
     
     @GetMapping
-    public String listar(Model model) {
+    public String listar(
+            @RequestParam(required = false) String direccion,
+            @RequestParam(required = false) Long idCiudad,
+            @RequestParam(required = false) TipoPropiedad tipo,
+            @RequestParam(required = false) EstadoDisponibilidad estado,
+            Model model) {
 
-        model.addAttribute("propiedades",
-                propiedadRepository.findByEliminadaFalse());
+        List<Propiedad> propiedades =
+                propiedadRepository.findByEliminadaFalse();
+
+        if (direccion != null && !direccion.isBlank()) {
+            propiedades = propiedades.stream()
+                    .filter(p -> p.getDireccion() != null
+                            && p.getDireccion().toLowerCase()
+                            .contains(direccion.toLowerCase()))
+                    .toList();
+        }
+
+        if (idCiudad != null) {
+            propiedades = propiedades.stream()
+                    .filter(p -> p.getCiudad() != null
+                            && p.getCiudad().getId().equals(idCiudad))
+                    .toList();
+        }
+
+        if (tipo != null) {
+            propiedades = propiedades.stream()
+                    .filter(p -> p.getTipo() == tipo)
+                    .toList();
+        }
+
+        if (estado != null) {
+            propiedades = propiedades.stream()
+                    .filter(p -> p.getEstado() == estado)
+                    .toList();
+        }
+
+        model.addAttribute("propiedades", propiedades);
+
+        cargarCombos(model);
+
+        model.addAttribute("direccionFiltro", direccion);
+        model.addAttribute("idCiudadFiltro", idCiudad);
+        model.addAttribute("tipoFiltro", tipo);
+        model.addAttribute("estadoFiltro", estado);
 
         return "propiedad/listado";
     }
@@ -143,18 +186,6 @@ public class PropiedadController {
         form.setIdPropietario(propiedad.getPropietario().getId());
 
         model.addAttribute("propiedadForm", form);
-
-        model.addAttribute("ciudades",
-                ciudadRepository.findAll());
-
-        model.addAttribute("propietarios",
-                personaRepository.findAllByOrderByApellidoAscNombreAsc());
-
-        model.addAttribute("tipos",
-                TipoPropiedad.values());
-
-        model.addAttribute("estados",
-                EstadoDisponibilidad.values());
 
         cargarCombos(model);
 

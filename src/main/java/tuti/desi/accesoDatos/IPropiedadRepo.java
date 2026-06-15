@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import tuti.desi.entidades.Ciudad;
 import tuti.desi.entidades.Propiedad;
+
 import java.util.List;
 
 public interface IPropiedadRepo extends JpaRepository<Propiedad, Long> {

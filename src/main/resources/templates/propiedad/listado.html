@@ -7,73 +7,165 @@
 
 
 <body>
+	<div class="page-header">
+	    <h1>Propiedades</h1>
 
-<h1>Propiedades</h1>
+	    <a th:href="@{/propiedades/nueva}"
+	       class="btn btn-success">
+	        Nueva Propiedad
+	    </a>
+	</div>
 
-<div th:if="${mensajeExito}" style="color: green;">
-    <p th:text="${mensajeExito}"></p>
+		<form th:action="@{/propiedades}"
+		      method="get"
+		      class="card">
+
+		    <div class="filters">
+
+		        <div class="form-group">
+		            <label>Dirección</label>
+
+		            <input type="text"
+		                   name="direccion"
+		                   th:value="${direccionFiltro}">
+		        </div>
+
+		        <div class="form-group">
+		            <label>Ciudad</label>
+
+		            <select name="idCiudad">
+		                <option value="">Todas</option>
+
+		                <option th:each="ciudad : ${ciudades}"
+		                        th:value="${ciudad.id}"
+		                        th:text="${ciudad.nombre}"
+		                        th:selected="${idCiudadFiltro != null and idCiudadFiltro == ciudad.id}">
+		                </option>
+
+		            </select>
+		        </div>
+
+		        <div class="form-group">
+		            <label>Tipo</label>
+
+		            <select name="tipo">
+		                <option value="">Todos</option>
+		                <option th:each="tipo : ${tipos}"
+		                        th:value="${tipo}"
+		                        th:text="${tipo}"
+		                        th:selected="${tipoFiltro == tipo}">
+		                </option>
+
+		            </select>
+		        </div>
+
+		        <div class="form-group">
+		            <label>Estado</label>
+
+		            <select name="estado">
+		                <option value="">Todos</option>
+
+		                <option th:each="estado : ${estados}"
+		                        th:value="${estado}"
+		                        th:text="${estado}"
+		                        th:selected="${estadoFiltro == estado}">
+		                </option>
+
+		            </select>
+		        </div>
+
+		    </div>
+
+			<div style="margin-top:20px;">
+			        <button class="btn btn-primary" type="submit">
+			            Filtrar
+			        </button>
+
+			        <a th:href="@{/propiedades}"
+			           class="btn btn-secondary">
+			            Limpiar
+			        </a>
+			    </div>
+		</form>
+
+<br>
+
+<div th:if="${mensajeExito}"
+     class="alert alert-success"
+     th:text="${mensajeExito}">
 </div>
 
-<div th:if="${mensajeError}" style="color: red;">
-    <p th:text="${mensajeError}"></p>
+<div th:if="${mensajeError}"
+     class="alert alert-error"
+     th:text="${mensajeError}">
 </div>
 
-<a th:href="@{/propiedades/nueva}">
-    Nueva Propiedad
-</a>
+<div class="table-container">
+	
+<table>
 
-<table border="1">
+			<thead>
+			<tr>
+			    <th>ID</th>
+			    <th>Dirección</th>
+			    <th>Ciudad</th>
+			    <th>Tipo</th>
+			    <th>Ambientes</th>
+			    <th>Metros cuadrados</th>
+			    <th>Estado</th>
+			    <th>Propietario</th>
+			    <th>Acciones</th>
+			</tr>
+			</thead>
 
-    <thead>
-        <tr>
-			<th>ID</th>
-            <th>Dirección</th>
-            <th>Ciudad</th>
-            <th>Tipo</th>
-            <th>Ambientes</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
+	<tbody>
 
-    <tbody>
+	<tr th:each="p : ${propiedades}">
 
-        <tr th:each="p : ${propiedades}">
-			
-			<td th:text="${p.id}"></td>
+	    <td th:text="${p.id}"></td>
 
-            <td th:text="${p.direccion}"></td>
+	    <td th:text="${p.direccion}"></td>
 
-            <td th:text="${p.ciudad.nombre}"></td>
+	    <td th:text="${p.ciudad.nombre}"></td>
 
-            <td th:text="${p.tipo}"></td>
+	    <td th:text="${p.tipo}"></td>
 
-            <td th:text="${p.cantidadAmbientes}"></td>
+	    <td th:text="${p.cantidadAmbientes}"></td>
 
-            <td th:text="${p.estado}"></td>
+	    <td th:text="${p.metrosCuadrados}"></td>
 
-            <td>
+	    <td th:text="${p.estado}"></td>
 
-                <form th:action="@{'/propiedades/' + ${p.id} + '/eliminar'}"
-                      method="post"
-                      onsubmit="return confirm('¿Seguro que desea eliminar esta propiedad?');">
+	    <td th:text="${p.propietario.apellido + ', ' + p.propietario.nombre}"></td>
 
-                    <button type="submit">
-                        Eliminar
-                    </button>
+		<td>
 
-                </form>
-				<a th:href="@{'/propiedades/' + ${p.id} + '/editar'}">
-				    Editar
-				</a>
+		    <a th:href="@{'/propiedades/' + ${p.id} + '/editar'}"
+		       class="btn btn-primary">
+		        Editar
+		    </a>
 
-            </td>
+		    <form th:action="@{'/propiedades/' + ${p.id} + '/eliminar'}"
+		          method="post"
+		          class="d-inline"
+		          onsubmit="return confirm('¿Seguro que desea eliminar esta propiedad?');">
 
-        </tr>
+		        <button class="btn btn-danger"
+		                type="submit">
+		            Eliminar
+		        </button>
 
-    </tbody>
+		    </form>
+
+		</td>
+
+	</tr>
+
+	</tbody>
 
 </table>
+
+</div>
 
 </body>
 </html>
