@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Alta de Propiedad</title>
+	<link rel="stylesheet" th:href="@{styles/main.css}" />
 </head>
 
 <body>
@@ -125,6 +126,10 @@
     </button>
 
 </form>
+
+<a th:href="@{/propiedades}">
+    Volver al Listado
+</a>
 
 </body>
 </html>

@@ -5,5 +5,6 @@ import tuti.desi.presentacion.propiedad.PropiedadForm;
 public interface IPropiedadService {
 
     void crear(PropiedadForm form);
+    void eliminar(Long propiedadId);
 
 }

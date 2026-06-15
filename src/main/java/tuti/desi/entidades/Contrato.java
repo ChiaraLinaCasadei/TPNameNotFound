@@ -106,4 +106,20 @@ public class Contrato {
     public void setEliminado(boolean eliminado) {
         this.eliminado = eliminado;
     }
+    
+    public Persona getInquilino() {
+        return inquilino;
+    }
+
+    public void setInquilino(Persona inquilino) {
+        this.inquilino = inquilino;
+    }
+    
+    public Propiedad getPropiedad() {
+        return propiedad;
+    }
+
+    public void setPropiedad(Propiedad propiedad) {
+        this.propiedad = propiedad;
+    }
 }

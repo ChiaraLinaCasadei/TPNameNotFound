@@ -4,12 +4,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
 import tuti.desi.entidades.EstadoDisponibilidad;
 import tuti.desi.entidades.TipoPropiedad;
+import tuti.desi.excepciones.NoSePuedeEliminarPropiedadException;
 import tuti.desi.accesoDatos.ICiudadRepo;
 import tuti.desi.accesoDatos.IPersonaRepo;
+import tuti.desi.accesoDatos.IPropiedadRepo;
 import tuti.desi.servicios.IPropiedadService;
 
 @Controller
@@ -19,15 +22,18 @@ public class PropiedadController {
     private  IPropiedadService propiedadService;
     private  ICiudadRepo ciudadRepository;
     private  IPersonaRepo personaRepository;
+    private IPropiedadRepo propiedadRepository;
 
     public PropiedadController(
     		IPropiedadService propiedadService,
     		ICiudadRepo ciudadRepository,
-    		IPersonaRepo personaRepository) {
+    		IPersonaRepo personaRepository,
+    		IPropiedadRepo propiedadRepository) {
 
         this.propiedadService = propiedadService;
         this.ciudadRepository = ciudadRepository;
         this.personaRepository = personaRepository;
+        this.propiedadRepository = propiedadRepository;
     }
 
     @GetMapping("/nueva")
@@ -82,6 +88,37 @@ public class PropiedadController {
 
             return "propiedad/crearPropiedad";
         }
+    }
+    
+    @GetMapping
+    public String listar(Model model) {
+
+        model.addAttribute("propiedades",
+                propiedadRepository.findByEliminadaFalse());
+
+        return "propiedad/listado";
+    }
+
+    @PostMapping("/{id}/eliminar")
+    public String eliminar(@PathVariable Long id,
+                           RedirectAttributes redirectAttributes) {
+
+        try {
+
+            propiedadService.eliminar(id);
+
+            redirectAttributes.addFlashAttribute(
+                    "mensajeExito",
+                    "Propiedad eliminada correctamente.");
+
+        } catch (NoSePuedeEliminarPropiedadException e) {
+
+            redirectAttributes.addFlashAttribute(
+                    "mensajeError",
+                    e.getMessage());
+        }
+
+        return "redirect:/propiedades";
     }
 
     private void cargarCombos(Model model) {
