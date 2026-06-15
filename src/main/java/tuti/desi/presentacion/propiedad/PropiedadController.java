@@ -31,7 +31,7 @@ public class PropiedadController {
     }
 
     @GetMapping("/nueva")
-    public String mostrarFormulario(Model model, String altaExitosa) {
+    public String mostrarFormulario(Model model, boolean altaExitosa) {
 
         model.addAttribute("propiedadForm", new PropiedadForm());
 
@@ -47,7 +47,7 @@ public class PropiedadController {
         model.addAttribute("estados",
                 EstadoDisponibilidad.values());
         
-        if (altaExitosa != null) {
+        if (altaExitosa) {
             model.addAttribute("mensajeExito",
                     "La propiedad fue registrada correctamente.");
         }
@@ -72,7 +72,7 @@ public class PropiedadController {
 
             propiedadService.crear(propiedadForm);
 
-            return "redirect:/propiedades/nueva?altaExitosa";
+            return "redirect:/propiedades/nueva?altaExitosa=true";
 
         } catch (IllegalArgumentException e) {
 
