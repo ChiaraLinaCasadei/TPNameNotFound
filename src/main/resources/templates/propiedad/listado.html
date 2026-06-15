@@ -26,6 +26,7 @@
 
     <thead>
         <tr>
+			<th>ID</th>
             <th>Dirección</th>
             <th>Ciudad</th>
             <th>Tipo</th>
@@ -38,6 +39,8 @@
     <tbody>
 
         <tr th:each="p : ${propiedades}">
+			
+			<td th.text="${p.id}"></td>
 
             <td th:text="${p.direccion}"></td>
 
@@ -60,6 +63,9 @@
                     </button>
 
                 </form>
+				<a th:href="@{'/propiedades/' + ${p.id} + '/editar'}">
+				    Editar
+				</a>
 
             </td>
 

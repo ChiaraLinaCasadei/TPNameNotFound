@@ -120,4 +120,73 @@ public class PropiedadServiceImp implements IPropiedadService {
         historial.setFechaHora(LocalDateTime.now());
         historialRepository.save(historial);
     }
+    
+    @Override
+    public void actualizar(PropiedadForm form) {
+
+        Propiedad propiedad = propiedadRepository.findById(form.getId())
+                .orElseThrow(() -> new RuntimeException("Propiedad inexistente"));
+        
+        Ciudad ciudad = ciudadRepository.findById(form.getIdCiudad())
+                .orElseThrow(() -> new RuntimeException("Ciudad inexistente"));
+
+        boolean duplicada = propiedadRepository
+                .existsByDireccionIgnoreCaseAndCiudadAndEliminadaFalseAndIdNot(
+                        form.getDireccion(),
+                        ciudad,
+                        form.getId());
+
+        if (duplicada) {
+            throw new RuntimeException("Ya existe otra propiedad con esa dirección y ciudad.");
+        }
+
+
+        boolean tieneContratoActivo =
+                contratoRepository.existsByPropiedadAndEstadoAndEliminadoFalse(
+                        propiedad,
+                        EstadoContrato.ACTIVO);
+
+        if (tieneContratoActivo) {
+
+            boolean intentaEstadoProhibido =
+                    form.getEstado() == EstadoDisponibilidad.DISPONIBLE
+                    || form.getEstado() == EstadoDisponibilidad.INACTIVA;
+
+            if (intentaEstadoProhibido) {
+                throw new RuntimeException(
+                        "No se puede cambiar el estado a DISPONIBLE o INACTIVA mientras exista un contrato activo.");
+            }
+        }
+
+        EstadoDisponibilidad estadoAnterior = propiedad.getEstado();
+        EstadoDisponibilidad estadoNuevo = form.getEstado();
+
+        boolean cambioEstado = estadoAnterior != estadoNuevo;
+
+        Persona propietario = personaRepository.findById(form.getIdPropietario())
+                .orElseThrow(() -> new RuntimeException("Propietario inexistente"));
+        
+        propiedad.setDireccion(form.getDireccion());
+        propiedad.setCiudad(ciudad);
+        propiedad.setTipo(form.getTipo());
+        propiedad.setCantidadAmbientes(form.getCantidadAmbientes());
+        propiedad.setMetrosCuadrados(form.getMetrosCuadrados());
+        propiedad.setDescripcion(form.getDescripcion());
+        propiedad.setComodidades(form.getComodidades());
+        propiedad.setEstado(estadoNuevo);
+        propiedad.setPropietario(propietario);
+
+        propiedadRepository.save(propiedad);
+
+        if (cambioEstado) {
+        	
+        	HistorialEstadoPropiedad historial = new HistorialEstadoPropiedad();
+
+            historial.setPropiedad(propiedad);
+            historial.setEstado(estadoNuevo);
+            historial.setFechaHora(LocalDateTime.now());
+            historialRepository.save(historial);
+            
+        }
+    }
 }

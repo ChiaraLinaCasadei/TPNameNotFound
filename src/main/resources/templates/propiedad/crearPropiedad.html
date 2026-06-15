@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Alta de Propiedad</title>
+    <title>Gestion de Propiedades</title>
 	<link rel="stylesheet" th:href="@{styles/main.css}" />
 </head>
 
 <body>
 
-<h1>Alta de Propiedad</h1>
+
+<h1 th:text="${propiedadForm.id == null ? 'Alta de Propiedad' : 'Edición de Propiedad'}"></h1>
 
 <div th:if="${mensajeExito}"
      style="color: green;
@@ -19,14 +20,19 @@
 
 </div>
 
-<form th:action="@{/propiedades}"
+<form th:action="${propiedadForm.id == null}
+                    ? @{/propiedades}
+                    : @{'/propiedades/' + ${propiedadForm.id}}"
       th:object="${propiedadForm}"
       method="post">
-
 	  <div th:if="${#fields.hasGlobalErrors()}">
 	      <p th:each="err : ${#fields.globalErrors()}"
 	         th:text="${err}">
 	      </p>
+	  </div>
+	  <div th:if="*{id != null}">
+	      ID:
+	      <input type="text" th:field="*{id}" readonly>
 	  </div>
     <div>
         Dirección:

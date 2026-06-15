@@ -8,6 +8,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
 import tuti.desi.entidades.EstadoDisponibilidad;
+import tuti.desi.entidades.Propiedad;
 import tuti.desi.entidades.TipoPropiedad;
 import tuti.desi.excepciones.NoSePuedeEliminarPropiedadException;
 import tuti.desi.accesoDatos.ICiudadRepo;
@@ -120,6 +121,68 @@ public class PropiedadController {
 
         return "redirect:/propiedades";
     }
+    
+    @GetMapping("/{id}/editar")
+    public String editar(@PathVariable Long id, Model model) {
+
+        Propiedad propiedad = propiedadRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Propiedad inexistente"));
+
+        PropiedadForm form = new PropiedadForm();
+
+        form.setId(propiedad.getId());
+        form.setDireccion(propiedad.getDireccion());
+        form.setTipo(propiedad.getTipo());
+        form.setCantidadAmbientes(propiedad.getCantidadAmbientes());
+        form.setMetrosCuadrados(propiedad.getMetrosCuadrados());
+        form.setDescripcion(propiedad.getDescripcion());
+        form.setComodidades(propiedad.getComodidades());
+        form.setEstado(propiedad.getEstado());
+
+        form.setIdCiudad(propiedad.getCiudad().getId());
+        form.setIdPropietario(propiedad.getPropietario().getId());
+
+        model.addAttribute("propiedadForm", form);
+
+        model.addAttribute("ciudades",
+                ciudadRepository.findAll());
+
+        model.addAttribute("propietarios",
+                personaRepository.findAllByOrderByApellidoAscNombreAsc());
+
+        model.addAttribute("tipos",
+                TipoPropiedad.values());
+
+        model.addAttribute("estados",
+                EstadoDisponibilidad.values());
+
+        cargarCombos(model);
+
+        return "propiedad/crearPropiedad";
+    }
+    
+    @PostMapping("/{id}")
+    public String actualizar(@ModelAttribute PropiedadForm propiedad,
+                             RedirectAttributes redirectAttributes) {
+
+        try {
+
+            propiedadService.actualizar(propiedad);
+
+            redirectAttributes.addFlashAttribute(
+                    "mensajeExito",
+                    "Propiedad actualizada correctamente.");
+
+        } catch (RuntimeException e) {
+
+            redirectAttributes.addFlashAttribute(
+                    "mensajeError",
+                    e.getMessage());
+        }
+
+        return "redirect:/propiedades";
+    }
+    
 
     private void cargarCombos(Model model) {
 

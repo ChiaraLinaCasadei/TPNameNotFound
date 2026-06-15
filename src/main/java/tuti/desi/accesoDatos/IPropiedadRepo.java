@@ -13,5 +13,10 @@ public interface IPropiedadRepo extends JpaRepository<Propiedad, Long> {
             Ciudad ciudad);
     
     List<Propiedad> findByEliminadaFalse();
+    
+    boolean existsByDireccionIgnoreCaseAndCiudadAndEliminadaFalseAndIdNot(
+            String direccion,
+            Ciudad ciudad,
+            Long id);
 
 }

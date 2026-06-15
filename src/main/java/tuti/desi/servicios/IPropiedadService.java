@@ -6,5 +6,6 @@ public interface IPropiedadService {
 
     void crear(PropiedadForm form);
     void eliminar(Long propiedadId);
+    void actualizar(PropiedadForm form);
 
 }
