@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Alta de Propiedad</title>
+</head>
+
+<body>
+
+<h1>Alta de Propiedad</h1>
+
+<div th:if="${mensajeExito}"
+     style="color: green;
+            border: 1px solid green;
+            padding: 10px;
+            margin-bottom: 15px;">
+
+    <span th:text="${mensajeExito}"></span>
+
+</div>
+
+<form th:action="@{/propiedades}"
+      th:object="${propiedadForm}"
+      method="post">
+
+	  <div th:if="${#fields.hasGlobalErrors()}">
+	      <p th:each="err : ${#fields.globalErrors()}"
+	         th:text="${err}">
+	      </p>
+	  </div>
+    <div>
+        Dirección:
+        <input type="text" th:field="*{direccion}">
+        <span th:errors="*{direccion}"></span>
+    </div>
+
+    <div>
+        Ciudad:
+        <select th:field="*{idCiudad}">
+            <option value="">Seleccione</option>
+
+            <option th:each="ciudad : ${ciudades}"
+                    th:value="${ciudad.id}"
+                    th:text="${ciudad.nombre}">
+            </option>
+        </select>
+
+        <span th:errors="*{idCiudad}"></span>
+    </div>
+
+    <div>
+        Tipo:
+        <select th:field="*{tipo}">
+            <option value="">Seleccione</option>
+
+            <option th:each="tipo : ${tipos}"
+                    th:value="${tipo}"
+                    th:text="${tipo}">
+            </option>
+        </select>
+    </div>
+
+    <div>
+        Cantidad de ambientes:
+        <input type="number"
+               min="1"
+               th:field="*{cantidadAmbientes}">
+
+        <span th:errors="*{cantidadAmbientes}"></span>
+    </div>
+
+    <div>
+        Metros cuadrados:
+        <input type="number"
+               step="0.01"
+               min="1"
+               th:field="*{metrosCuadrados}">
+
+        <span th:errors="*{metrosCuadrados}"></span>
+    </div>
+
+    <div>
+        Descripción:
+        <textarea th:field="*{descripcion}"></textarea>
+
+        <span th:errors="*{descripcion}"></span>
+    </div>
+
+    <div>
+        Comodidades:
+        <textarea th:field="*{comodidades}"></textarea>
+
+        <span th:errors="*{comodidades}"></span>
+    </div>
+
+    <div>
+        Estado:
+        <select th:field="*{estado}">
+
+            <option value="">Seleccione</option>
+
+            <option th:each="estado : ${estados}"
+                    th:value="${estado}"
+                    th:text="${estado}">
+            </option>
+
+        </select>
+    </div>
+
+    <div>
+        Propietario:
+        <select th:field="*{idPropietario}">
+            <option value="">Seleccione</option>
+
+            <option th:each="persona : ${propietarios}"
+                    th:value="${persona.id}"
+                    th:text="${persona.apellido + ', ' + persona.nombre}">
+            </option>
+        </select>
+
+        <span th:errors="*{idPropietario}"></span>
+    </div>
+
+    <button type="submit">
+        Guardar
+    </button>
+
+</form>
+
+</body>
+</html>
