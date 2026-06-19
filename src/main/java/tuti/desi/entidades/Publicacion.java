@@ -50,7 +50,7 @@ public class Publicacion {
         this.id = id;
     }
 
-    public BigDecimal getPrecioMensual (BigDecimal precioMensual) {
+    public BigDecimal getPrecioMensual () {
     	return precioMensual;
     }
 
