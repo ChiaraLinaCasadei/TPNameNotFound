@@ -12,4 +12,9 @@ public interface IPublicacionService {
     void crear(PublicacionForm form);
     
     void eliminar(Long id);
+    
+    PublicacionForm buscarParaEditar(Long id);
+
+    void modificar(PublicacionForm form);
 }
+

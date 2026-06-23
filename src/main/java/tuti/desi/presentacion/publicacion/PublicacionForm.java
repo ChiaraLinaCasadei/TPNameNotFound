@@ -27,10 +27,9 @@ public class PublicacionForm {
     @NotNull(message = "La fecha de publicación es obligatoria")
     private LocalDate fechaPublicacion;
 
-    private EstadoPublicacion estado;
-
     @NotNull(message = "Debe seleccionar una propiedad")
     private Long idPropiedad;
+    private EstadoPublicacion estado;
 
     public PublicacionForm() {
     }
@@ -43,7 +42,7 @@ public class PublicacionForm {
         this.descripcion = publicacion.getDescripcion();
         this.fechaPublicacion = publicacion.getFechaPublicacion();
         this.estado = publicacion.getEstado();
-
+        this.precioMensual = publicacion.getPrecioMensual();
         this.idPropiedad = publicacion.getPropiedad() == null
                 ? null
                 : publicacion.getPropiedad().getId();
