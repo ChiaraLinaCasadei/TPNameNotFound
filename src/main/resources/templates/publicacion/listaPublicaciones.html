@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Listado de Publicaciones</title>
+    <link rel="stylesheet" th:href="@{/styles/main.css}" />
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="page-header">
+        <h1>Publicaciones</h1>
+
+        <a th:href="@{/publicaciones/nueva}"
+           class="btn btn-success">
+            Nueva Publicación
+        </a>
+    </div>
+
+    <div th:if="${mensajeExito}"
+         class="alert alert-success"
+         th:text="${mensajeExito}">
+    </div>
+
+    <div th:if="${mensajeError}"
+         class="alert alert-error"
+         th:text="${mensajeError}">
+    </div>
+
+	<form method="get"
+	      th:action="@{/publicaciones}"
+	      class="card">
+
+	    <div class="filters">
+
+	        <div class="form-group">
+	            <label>Ciudad</label>
+	            <input type="text" name="ciudad">
+	        </div>
+
+	        <div class="form-group">
+	            <label>Propiedad (ID)</label>
+	            <input type="number" name="idPropiedad">
+	        </div>
+
+	        <div class="form-group">
+	            <label>Estado</label>
+	            <select name="estado">
+	                <option value="">Todos</option>
+	                <option th:each="e : ${T(tuti.desi.entidades.EstadoPublicacion).values()}"
+	                        th:value="${e}"
+	                        th:text="${e}">
+	                </option>
+	            </select>
+	        </div>
+
+	        <div class="form-group">
+	            <label>Precio mínimo</label>
+	            <input type="number" step="0.01" name="precioMin">
+	        </div>
+
+	        <div class="form-group">
+	            <label>Precio máximo</label>
+	            <input type="number" step="0.01" name="precioMax">
+	        </div>
+
+	    </div>
+
+	    <div style="margin-top:15px;">
+	        <button class="btn btn-primary" type="submit">
+	            Filtrar
+	        </button>
+
+	        <a th:href="@{/publicaciones}"
+	           class="btn btn-secondary">
+	            Limpiar
+	        </a>
+	    </div>
+
+	</form> 
+	
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Descripción</th>
+                    <th>Condiciones</th>
+                    <th>Precio Mensual</th>
+                    <th>Fecha Publicación</th>
+                    <th>Estado</th>
+                    <th>Propiedad</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr th:each="p : ${publicaciones}">
+
+                    <td th:text="${p.id}"></td>
+                    <td th:text="${p.descripcion}"></td>
+                    <td th:text="${p.condiciones}"></td>
+                    <td th:text="${p.precioMensual}"></td>
+                    <td th:text="${p.fechaPublicacion}"></td>
+                    <td th:text="${p.estado}"></td>
+                    <td th:text="${p.propiedad != null ? p.propiedad.direccion : 'Sin propiedad'}"></td>
+
+                    <td>
+						
+						<a th:href="@{'/publicaciones/' + ${p.id} + '/editar'}"
+						   class="btn btn-primary">
+						    Editar
+						</a>
+						
+						<br>
+
+                        <a th:href="@{/publicaciones/eliminar/{id}(id=${p.id})}"
+                           class="btn btn-danger"
+                           onclick="return confirm('¿Seguro que desea eliminar esta publicación?');">
+                            Eliminar
+                        </a>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>
