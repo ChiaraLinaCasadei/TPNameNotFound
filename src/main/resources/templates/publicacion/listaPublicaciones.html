@@ -94,6 +94,7 @@
                     <th>Precio Mensual</th>
                     <th>Fecha Publicación</th>
                     <th>Estado</th>
+					<th>Ciudad</th>
                     <th>Propiedad</th>
                     <th>Acciones</th>
                 </tr>
@@ -109,7 +110,9 @@
                     <td th:text="${p.precioMensual}"></td>
                     <td th:text="${p.fechaPublicacion}"></td>
                     <td th:text="${p.estado}"></td>
+					<td th:text="${p.propiedad.ciudad.nombre}"></td>
                     <td th:text="${p.propiedad != null ? p.propiedad.direccion : 'Sin propiedad'}"></td>
+					
 
                     <td>
 						
