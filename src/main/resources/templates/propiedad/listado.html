@@ -16,31 +16,29 @@
 	    </a>
 	</div>
 
-		<form th:action="@{/propiedades}"
-		      method="get"
-		      class="card">
+	<form th:action="@{/propiedades}"
+	      method="get"
+	      th:object="${filtro}"
+	      class="card">
 
 		    <div class="filters">
 
 		        <div class="form-group">
 		            <label>Dirección</label>
-
-		            <input type="text"
-		                   name="direccion"
-		                   th:value="${direccionFiltro}">
+					<input type="text" th:field="*{direccion}">
 		        </div>
 
 		        <div class="form-group">
 		            <label>Ciudad</label>
 
-		            <select name="idCiudad">
-		                <option value="">Todas</option>
+						<select th:field="*{idCiudad}">
+						    <option value="">Todas</option>
 
-		                <option th:each="ciudad : ${ciudades}"
-		                        th:value="${ciudad.id}"
-		                        th:text="${ciudad.nombre}"
-		                        th:selected="${idCiudadFiltro != null and idCiudadFiltro == ciudad.id}">
-		                </option>
+						    <option th:each="ciudad : ${ciudades}"
+						            th:value="${ciudad.id}"
+						            th:text="${ciudad.nombre}">
+						    </option>
+						</select>
 
 		            </select>
 		        </div>
@@ -48,30 +46,27 @@
 		        <div class="form-group">
 		            <label>Tipo</label>
 
-		            <select name="tipo">
-		                <option value="">Todos</option>
-		                <option th:each="tipo : ${tipos}"
-		                        th:value="${tipo}"
-		                        th:text="${tipo}"
-		                        th:selected="${tipoFiltro == tipo}">
-		                </option>
+					<select th:field="*{tipo}">
+					    <option value="">Todos</option>
 
-		            </select>
+					    <option th:each="tipo : ${tipos}"
+					            th:value="${tipo}"
+					            th:text="${tipo}">
+					    </option>
+					</select>
 		        </div>
 
 		        <div class="form-group">
 		            <label>Estado</label>
 
-		            <select name="estado">
-		                <option value="">Todos</option>
+					<select th:field="*{estado}">
+					    <option value="">Todos</option>
 
-		                <option th:each="estado : ${estados}"
-		                        th:value="${estado}"
-		                        th:text="${estado}"
-		                        th:selected="${estadoFiltro == estado}">
-		                </option>
-
-		            </select>
+					    <option th:each="estado : ${estados}"
+					            th:value="${estado}"
+					            th:text="${estado}">
+					    </option>
+					</select>
 		        </div>
 
 		    </div>

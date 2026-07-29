@@ -95,50 +95,15 @@ public class PropiedadController {
     
     @GetMapping
     public String listar(
-            @RequestParam(required = false) String direccion,
-            @RequestParam(required = false) Long idCiudad,
-            @RequestParam(required = false) TipoPropiedad tipo,
-            @RequestParam(required = false) EstadoDisponibilidad estado,
+    		@ModelAttribute PropiedadFiltroDTO filtro,
             Model model) {
 
-        List<Propiedad> propiedades =
-                propiedadRepository.findByEliminadaFalse();
+    	 List<Propiedad> propiedades = propiedadService.buscar(filtro);
 
-        if (direccion != null && !direccion.isBlank()) {
-            propiedades = propiedades.stream()
-                    .filter(p -> p.getDireccion() != null
-                            && p.getDireccion().toLowerCase()
-                            .contains(direccion.toLowerCase()))
-                    .toList();
-        }
-
-        if (idCiudad != null) {
-            propiedades = propiedades.stream()
-                    .filter(p -> p.getCiudad() != null
-                            && p.getCiudad().getId().equals(idCiudad))
-                    .toList();
-        }
-
-        if (tipo != null) {
-            propiedades = propiedades.stream()
-                    .filter(p -> p.getTipo() == tipo)
-                    .toList();
-        }
-
-        if (estado != null) {
-            propiedades = propiedades.stream()
-                    .filter(p -> p.getEstado() == estado)
-                    .toList();
-        }
-
-        model.addAttribute("propiedades", propiedades);
+    	    model.addAttribute("propiedades", propiedades);
+    	    model.addAttribute("filtro", filtro);
 
         cargarCombos(model);
-
-        model.addAttribute("direccionFiltro", direccion);
-        model.addAttribute("idCiudadFiltro", idCiudad);
-        model.addAttribute("tipoFiltro", tipo);
-        model.addAttribute("estadoFiltro", estado);
 
         return "propiedad/listado";
     }
