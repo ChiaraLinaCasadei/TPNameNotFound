@@ -40,7 +40,7 @@ public class PropiedadController {
     }
 
     @GetMapping("/nueva")
-    public String mostrarFormulario(Model model, boolean altaExitosa) {
+    public String mostrarFormulario(Model model) {
 
         model.addAttribute("propiedadForm", new PropiedadForm());
 
@@ -55,11 +55,6 @@ public class PropiedadController {
 
         model.addAttribute("estados",
                 EstadoDisponibilidad.values());
-        
-        if (altaExitosa) {
-            model.addAttribute("mensajeExito",
-                    "La propiedad fue registrada correctamente.");
-        }
 
         return "propiedad/crearPropiedad";
     }
@@ -68,7 +63,8 @@ public class PropiedadController {
     public String guardar(
             @Valid @ModelAttribute PropiedadForm propiedadForm,
             BindingResult bindingResult,
-            Model model) {
+            Model model,
+            RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
 
@@ -79,66 +75,37 @@ public class PropiedadController {
 
         try {
 
-            propiedadService.crear(propiedadForm);
+        	propiedadService.crear(propiedadForm);
 
-            return "redirect:/propiedades/nueva?altaExitosa=true";
+            redirectAttributes.addFlashAttribute(
+                    "mensajeExito",
+                    "Propiedad creada correctamente.");
 
         } catch (IllegalArgumentException e) {
 
-            bindingResult.reject("duplicada", e.getMessage());
+        	 bindingResult.reject("duplicada", e.getMessage());
 
-            cargarCombos(model);
+             cargarCombos(model);
 
-            return "propiedad/crearPropiedad";
+             return "propiedad/crearPropiedad";
+
         }
+
+        return "redirect:/propiedades";
     }
+    
     
     @GetMapping
     public String listar(
-            @RequestParam(required = false) String direccion,
-            @RequestParam(required = false) Long idCiudad,
-            @RequestParam(required = false) TipoPropiedad tipo,
-            @RequestParam(required = false) EstadoDisponibilidad estado,
+    		@ModelAttribute PropiedadFiltroDTO filtro,
             Model model) {
 
-        List<Propiedad> propiedades =
-                propiedadRepository.findByEliminadaFalse();
+    	 List<Propiedad> propiedades = propiedadService.buscar(filtro);
 
-        if (direccion != null && !direccion.isBlank()) {
-            propiedades = propiedades.stream()
-                    .filter(p -> p.getDireccion() != null
-                            && p.getDireccion().toLowerCase()
-                            .contains(direccion.toLowerCase()))
-                    .toList();
-        }
-
-        if (idCiudad != null) {
-            propiedades = propiedades.stream()
-                    .filter(p -> p.getCiudad() != null
-                            && p.getCiudad().getId().equals(idCiudad))
-                    .toList();
-        }
-
-        if (tipo != null) {
-            propiedades = propiedades.stream()
-                    .filter(p -> p.getTipo() == tipo)
-                    .toList();
-        }
-
-        if (estado != null) {
-            propiedades = propiedades.stream()
-                    .filter(p -> p.getEstado() == estado)
-                    .toList();
-        }
-
-        model.addAttribute("propiedades", propiedades);
+    	    model.addAttribute("propiedades", propiedades);
+    	    model.addAttribute("filtro", filtro);
 
         cargarCombos(model);
-
-        model.addAttribute("direccionFiltro", direccion);
-        model.addAttribute("idCiudadFiltro", idCiudad);
-        model.addAttribute("tipoFiltro", tipo);
-        model.addAttribute("estadoFiltro", estado);
 
         return "propiedad/listado";
     }

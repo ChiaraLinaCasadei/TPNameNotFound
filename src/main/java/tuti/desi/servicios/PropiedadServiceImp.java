@@ -1,10 +1,12 @@
 package tuti.desi.servicios;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import tuti.desi.presentacion.propiedad.PropiedadFiltroDTO;
 import tuti.desi.presentacion.propiedad.PropiedadForm;
 import tuti.desi.entidades.Ciudad;
 import tuti.desi.entidades.EstadoContrato;
@@ -189,4 +191,13 @@ public class PropiedadServiceImp implements IPropiedadService {
             
         }
     }
+    
+    @Override
+	public List<Propiedad> buscar(PropiedadFiltroDTO filtro) {
+    	return propiedadRepository.buscar(
+                filtro.getDireccion(),
+                filtro.getIdCiudad(),
+                filtro.getTipo(),
+                filtro.getEstado());
+        }
 }
