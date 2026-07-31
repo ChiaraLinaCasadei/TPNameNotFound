@@ -83,11 +83,11 @@ public class PropiedadController {
 
         } catch (IllegalArgumentException e) {
 
-        	redirectAttributes.addFlashAttribute(
-                    "mensajeError",
-                     e.getMessage());
+        	 bindingResult.reject("duplicada", e.getMessage());
 
-            cargarCombos(model);
+             cargarCombos(model);
+
+             return "propiedad/crearPropiedad";
 
         }
 
